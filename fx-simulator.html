@@ -73,7 +73,7 @@
   .bd-label{font-size:10px;color:var(--text-muted);margin-top:3px;}
 
   /* 차트 */
-  .chart-wrap{background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:20px 16px;margin-bottom:16px;}
+  .chart-wrap{background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:20px 16px;margin-bottom:16px;} .chart-canvas-wrap{position:relative;height:260px;width:100%;}
   .chart-title{font-size:11px;color:var(--text-dim);margin-bottom:16px;font-family:'DM Mono',monospace;letter-spacing:1px;}
 
   /* 히스토리 환율 */
@@ -197,7 +197,7 @@
     <!-- 달러 수익 vs 원화 수익 차트 -->
     <div class="chart-wrap">
       <div class="chart-title">환율별 원화 수익률 비교 — 달러 수익은 동일, 환율만 다름</div>
-      <canvas id="fx-chart" height="240"></canvas>
+      <div class="chart-canvas-wrap"><canvas id="fx-chart"></canvas></div>
     </div>
 
     <!-- 환율 손익분기점 -->

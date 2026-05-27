@@ -82,7 +82,7 @@
   }
   .best-box strong{color:var(--green);}
 
-  .chart-wrap{background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:20px 16px;margin-bottom:16px;}
+  .chart-wrap{background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:20px 16px;margin-bottom:16px;} .chart-canvas-wrap{position:relative;height:260px;width:100%;}
   .chart-title{font-size:11px;color:var(--text-dim);margin-bottom:16px;font-family:'DM Mono',monospace;letter-spacing:1px;}
 
   .data-table{width:100%;border-collapse:collapse;font-size:12px;}
@@ -197,7 +197,7 @@
     <!-- 차트 -->
     <div class="chart-wrap">
       <div class="chart-title">연도별 총자산 추이 (원화 환산 · 세후)</div>
-      <canvas id="main-chart" height="220"></canvas>
+      <div class="chart-canvas-wrap"><canvas id="main-chart"></canvas></div>
     </div>
 
     <!-- 상세 테이블 -->

@@ -54,7 +54,7 @@
   .card-title{font-size:11px;letter-spacing:2px;color:var(--text-muted);text-transform:uppercase;font-family:'DM Mono',monospace;margin-bottom:16px;}
 
   /* 차트 */
-  .chart-wrap{background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:20px 16px;margin-bottom:16px;}
+  .chart-wrap{background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:20px 16px;margin-bottom:16px;} .chart-canvas-wrap{position:relative;height:260px;width:100%;}
   .chart-title{font-size:11px;color:var(--text-dim);margin-bottom:16px;font-family:'DM Mono',monospace;letter-spacing:1px;}
 
   /* 수익률 커브 설명 */
@@ -125,13 +125,13 @@
   <!-- 수익률 커브 차트 -->
   <div class="chart-wrap">
     <div class="chart-title">수익률 커브 (Yield Curve) — 만기별 금리</div>
-    <canvas id="curve-chart" height="200"></canvas>
+    <div class="chart-canvas-wrap"><canvas id="curve-chart"></canvas></div>
   </div>
 
   <!-- 역사적 비교 차트 -->
   <div class="chart-wrap">
     <div class="chart-title">10년물 · 30년물 금리 추이 (2005~현재)</div>
-    <canvas id="history-chart" height="220"></canvas>
+    <div class="chart-canvas-wrap"><canvas id="history-chart"></canvas></div>
   </div>
 
   <!-- 상세 데이터 테이블 -->
