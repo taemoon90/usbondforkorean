@@ -3,241 +3,172 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2005년 미국채 투자 시뮬레이터 | USBond.co.kr</title>
-<meta name="description" content="2005년에 삼성증권에서 미국채를 샀다면 얼마나 벌었을까? 실제 금리·환율 데이터로 세후 수익을 계산해보세요.">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<title>2005년 미국채 시뮬레이터 | USBond.co.kr</title>
+<meta name="description" content="2005년 삼성증권에서 미국채를 샀다면 얼마나 벌었을까? 실제 금리·환율 데이터로 세후 수익을 계산해보세요.">
+<link rel="canonical" href="https://usbond.co.kr/simulator2005.html">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4629563432953818" crossorigin="anonymous"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@300;400;500&family=Lora:ital,wght@0,600;0,700;1,500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-  :root {
-    --gold:#c9a84c; --gold-light:#e8c96a; --gold-dim:rgba(201,168,76,0.13);
-    --navy:#060d1f; --navy2:#0b1630; --navy3:#0f1e3a;
-    --text:#dce4f0; --text-dim:#6b7fa0; --text-muted:#3a4d6a;
-    --green:#3dd68c; --red:#f06070; --blue:#4d9fff;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  html{scroll-behavior:smooth;}
-  body{font-family:'Noto Serif KR',serif;background:var(--navy);color:var(--text);min-height:100vh;}
-  nav{
-    position:sticky;top:0;z-index:100;
-    background:rgba(6,13,31,0.93);backdrop-filter:blur(16px);
-    border-bottom:1px solid rgba(201,168,76,0.18);
-    padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:58px;
-  }
-  .nav-logo{font-size:18px;font-weight:700;color:var(--gold);text-decoration:none;}
-  .nav-back{font-size:12px;color:var(--text-dim);text-decoration:none;font-family:'DM Mono',monospace;}
-  .nav-back:hover{color:var(--gold);}
-
-  .hero{
-    padding:64px 24px 48px;text-align:center;
-    background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(201,168,76,0.07) 0%,transparent 70%);
-  }
-  .badge{
-    display:inline-block;background:var(--gold-dim);border:1px solid rgba(201,168,76,0.35);
-    border-radius:2px;padding:3px 14px;font-family:'DM Mono',monospace;
-    font-size:10px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:18px;
-  }
-  h1{font-family:'Playfair Display',serif;font-size:clamp(24px,5vw,44px);font-weight:900;color:#f0f4ff;line-height:1.2;margin-bottom:12px;}
-  h1 em{color:var(--gold);font-style:normal;}
-  .hero-sub{color:var(--text-dim);font-size:14px;line-height:1.8;max-width:540px;margin:0 auto 36px;}
-
-  .wrap{max-width:920px;margin:0 auto;padding:0 16px 80px;}
-
-  .card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:24px;margin-bottom:16px;}
-  .card-title{font-size:11px;letter-spacing:2px;color:var(--text-muted);text-transform:uppercase;font-family:'DM Mono',monospace;margin-bottom:16px;}
-
-  .input-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:20px;}
-  .ig label{font-size:11px;color:var(--text-dim);display:block;margin-bottom:6px;font-family:'DM Mono',monospace;}
-  .ig input,.ig select{
-    width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);
-    border-radius:7px;padding:9px 12px;color:var(--text);font-size:13px;
-    font-family:'DM Mono',monospace;-webkit-appearance:none;
-  }
-  .ig input:focus,.ig select:focus{outline:none;border-color:var(--gold);}
-
-  .btn{
-    width:100%;padding:13px;background:var(--gold);color:var(--navy);
-    border:none;border-radius:8px;font-size:14px;font-weight:700;
-    font-family:'Noto Serif KR',serif;cursor:pointer;transition:all 0.2s;
-  }
-  .btn:hover{background:var(--gold-light);transform:translateY(-1px);}
-
-  .result-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:20px;}
-  .ri{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:14px 16px;}
-  .rl{font-size:10px;color:var(--text-muted);font-family:'DM Mono',monospace;margin-bottom:5px;}
-  .rv{font-size:20px;font-family:'DM Mono',monospace;font-weight:500;}
-  .rv.pos{color:var(--green);}
-  .rv.neg{color:var(--red);}
-  .rv.gold{color:var(--gold);}
-  .rs{font-size:10px;color:var(--text-muted);margin-top:3px;}
-
-  .range-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
-  .range-row label{font-size:11px;color:var(--text-dim);font-family:'DM Mono',monospace;min-width:70px;}
-  .range-row input[type=range]{flex:1;accent-color:var(--gold);}
-  .range-val{font-family:'DM Mono',monospace;font-size:14px;color:var(--gold);min-width:60px;text-align:right;}
-
-  .best-box{
-    background:rgba(61,214,140,0.07);border:1px solid rgba(61,214,140,0.22);
-    border-radius:10px;padding:14px 18px;margin:16px 0;
-    font-size:13px;color:var(--text-dim);line-height:1.8;
-  }
-  .best-box strong{color:var(--green);}
-
-  .chart-wrap{background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:20px 16px;margin-bottom:16px;} .chart-canvas-wrap{position:relative;height:260px;width:100%;}
-  .chart-title{font-size:11px;color:var(--text-dim);margin-bottom:16px;font-family:'DM Mono',monospace;letter-spacing:1px;}
-
-  .data-table{width:100%;border-collapse:collapse;font-size:12px;}
-  .data-table th{padding:8px 10px;text-align:right;color:var(--text-muted);font-weight:400;font-family:'DM Mono',monospace;font-size:10px;border-bottom:1px solid rgba(255,255,255,0.08);}
-  .data-table td{padding:8px 10px;text-align:right;border-bottom:1px solid rgba(255,255,255,0.04);font-family:'DM Mono',monospace;color:var(--text);cursor:pointer;}
-  .data-table th:first-child,.data-table td:first-child{text-align:left;}
-  .data-table tr:hover td{background:rgba(255,255,255,0.03);}
-  .data-table tr.sel td{background:rgba(201,168,76,0.1);}
-  .data-table tr.best td{background:rgba(61,214,140,0.07);}
-
-  .info-box{background:rgba(77,159,255,0.07);border:1px solid rgba(77,159,255,0.2);border-radius:8px;padding:14px 16px;font-size:12px;color:var(--text-dim);line-height:1.8;margin-top:14px;}
-  .info-box strong{color:var(--blue);}
-
-  .timeline{display:flex;gap:0;margin:24px 0;overflow-x:auto;padding-bottom:8px;}
-  .tl-item{flex:1;min-width:80px;text-align:center;position:relative;}
-  .tl-item::before{content:'';position:absolute;top:14px;left:50%;right:-50%;height:2px;background:rgba(255,255,255,0.08);z-index:0;}
-  .tl-item:last-child::before{display:none;}
-  .tl-dot{width:28px;height:28px;border-radius:50%;background:var(--navy3);border:2px solid rgba(255,255,255,0.15);margin:0 auto 8px;position:relative;z-index:1;display:flex;align-items:center;justify-content:center;font-size:10px;font-family:'DM Mono',monospace;}
-  .tl-dot.active{background:var(--gold);border-color:var(--gold);color:var(--navy);font-weight:700;}
-  .tl-dot.best{background:var(--green);border-color:var(--green);color:var(--navy);font-weight:700;}
-  .tl-year{font-size:10px;color:var(--text-muted);font-family:'DM Mono',monospace;}
-  .tl-ret{font-size:11px;font-family:'DM Mono',monospace;margin-top:2px;}
-
-  footer{border-top:1px solid rgba(255,255,255,0.06);padding:28px 24px;text-align:center;font-size:11px;color:var(--text-muted);font-family:'DM Mono',monospace;line-height:2;}
-  footer a{color:var(--gold);text-decoration:none;}
-
-  @media(max-width:600px){.result-grid{grid-template-columns:1fr 1fr;}.input-grid{grid-template-columns:1fr 1fr;}}
+:root{--bg:#f4f4f5;--surface:#fff;--border:#e4e4e7;--border2:#d4d4d8;--text:#09090b;--text2:#3f3f46;--text3:#71717a;--text4:#a1a1aa;--green:#22c55e;--green-bg:#dcfce7;--green-text:#15803d;--green-border:#bbf7d0;--blue:#2563eb;--blue-bg:#dbeafe;--blue-text:#1d4ed8;--blue-border:#bfdbfe;--red:#ef4444;--red-bg:#fee2e2;--red-text:#dc2626;--red-border:#fecaca;--amber:#f59e0b;--amber-bg:#fef3c7;--amber-text:#b45309;--amber-border:#fde68a;--radius:10px;--radius-sm:6px;--radius-lg:14px;--shadow:0 1px 3px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.06);--shadow-md:0 4px 6px rgba(0,0,0,0.07),0 2px 4px rgba(0,0,0,0.06);}
+*{box-sizing:border-box;margin:0;padding:0;}html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:58px;}
+.nav-logo{display:flex;align-items:baseline;gap:8px;text-decoration:none;}
+.nav-logo-main{font-family:'Lora',serif;font-size:18px;font-weight:700;color:var(--text);}
+.nav-logo-sub{font-size:12px;color:var(--text3);}
+.nav-back{font-size:13px;color:var(--text2);text-decoration:none;padding:6px 12px;border-radius:var(--radius-sm);border:1px solid var(--border);transition:all 0.15s;}
+.nav-back:hover{background:var(--bg);}
+.page-header{background:var(--surface);border-bottom:1px solid var(--border);padding:40px 24px 32px;}
+.page-header-inner{max-width:960px;margin:0 auto;}
+.page-eyebrow{font-size:11px;font-weight:600;color:var(--amber-text);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;}
+.page-title{font-family:'Lora',serif;font-size:clamp(22px,4vw,34px);font-weight:700;color:var(--text);margin-bottom:8px;}
+.page-sub{font-size:14px;color:var(--text3);line-height:1.7;}
+.section{padding:40px 24px;}
+.section-inner{max-width:960px;margin:0 auto;}
+.section-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:16px;}
+.divider{border:none;border-top:1px solid var(--border);}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;box-shadow:var(--shadow);}
+.input-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:16px;}
+.ig label{font-size:12px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px;}
+.ig input,.ig select{width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;color:var(--text);font-size:13px;font-family:'DM Mono',monospace;-webkit-appearance:none;transition:border-color 0.15s;}
+.ig input:focus,.ig select:focus{outline:none;border-color:var(--blue);}
+.range-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.range-row label{font-size:12px;font-weight:600;color:var(--text2);min-width:80px;}
+.range-row input[type=range]{flex:1;accent-color:var(--blue);}
+.range-val{font-family:'DM Mono',monospace;font-size:15px;font-weight:700;color:var(--blue);min-width:60px;text-align:right;}
+.btn{width:100%;padding:12px;background:var(--text);color:#fff;border:none;border-radius:var(--radius);font-size:14px;font-weight:700;cursor:pointer;transition:all 0.15s;}
+.btn:hover{background:var(--text2);transform:translateY(-1px);}
+.result-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px;}
+.ri{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:13px 15px;}
+.ri.green{background:var(--green-bg);border-color:var(--green-border);}
+.rl{font-size:11px;font-weight:600;color:var(--text3);margin-bottom:4px;}
+.rv{font-size:18px;font-family:'DM Mono',monospace;font-weight:700;}
+.rs{font-size:11px;color:var(--text3);margin-top:2px;}
+/* 타임라인 */
+.timeline{display:flex;gap:0;overflow-x:auto;padding:4px 0 8px;margin-bottom:16px;}
+.tl-item{flex:1;min-width:72px;text-align:center;position:relative;cursor:pointer;}
+.tl-item::before{content:'';position:absolute;top:14px;left:50%;right:-50%;height:2px;background:var(--border);z-index:0;}
+.tl-item:last-child::before{display:none;}
+.tl-dot{width:28px;height:28px;border-radius:50%;background:var(--surface);border:2px solid var(--border);margin:0 auto 6px;position:relative;z-index:1;display:flex;align-items:center;justify-content:center;font-size:9px;font-family:'DM Mono',monospace;font-weight:700;transition:all 0.15s;}
+.tl-dot.active{background:var(--blue);border-color:var(--blue);color:#fff;}
+.tl-dot.best{background:var(--green);border-color:var(--green);color:#fff;}
+.tl-year{font-size:9px;color:var(--text3);font-family:'DM Mono',monospace;}
+.tl-ret{font-size:10px;font-family:'DM Mono',monospace;font-weight:600;margin-top:2px;}
+/* 차트 */
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;box-shadow:var(--shadow);margin-bottom:16px;}
+.chart-label{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:16px;}
+.chart-canvas-wrap{position:relative;height:260px;width:100%;}
+/* 테이블 */
+.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow);}
+.data-table{width:100%;border-collapse:collapse;font-size:12px;}
+.data-table th{padding:10px 12px;text-align:right;background:var(--bg);font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid var(--border);}
+.data-table th:first-child{text-align:left;}
+.data-table td{padding:10px 12px;text-align:right;border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;color:var(--text);cursor:pointer;}
+.data-table td:first-child{text-align:left;font-family:'DM Sans',sans-serif;}
+.data-table tr:hover td{background:var(--bg);}
+.data-table tr.sel td{background:var(--blue-bg);}
+.data-table tr.best td{background:var(--green-bg);}
+.best-box{background:var(--green-bg);border:1px solid var(--green-border);border-radius:var(--radius);padding:14px 18px;font-size:13px;color:var(--green-text);line-height:1.8;margin-bottom:16px;}
+.info-box{background:var(--blue-bg);border:1px solid var(--blue-border);border-radius:var(--radius);padding:14px 18px;font-size:13px;color:var(--blue-text);line-height:1.8;margin-top:14px;}
+footer{background:var(--text);color:rgba(255,255,255,0.6);padding:32px 24px;}
+.footer-inner{max-width:960px;margin:0 auto;display:flex;flex-direction:column;gap:16px;}
+.footer-links{display:flex;flex-wrap:wrap;gap:14px;}
+.footer-links a{font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;}
+.footer-links a:hover{color:#fff;}
+.footer-note{font-size:12px;color:rgba(255,255,255,0.35);line-height:1.8;border-top:1px solid rgba(255,255,255,0.1);padding-top:16px;}
 </style>
 </head>
 <body>
-
 <nav>
-  <a href="/" class="nav-logo">USBond</a>
-  <a href="/" class="nav-back">← 계산기 홈</a>
+  <a href="/" class="nav-logo"><span class="nav-logo-main">USBond</span><span class="nav-logo-sub">미국채 계산기</span></a>
+  <a href="/" class="nav-back">← 홈으로</a>
 </nav>
 
-<section class="hero">
-  <div class="badge">Historical Simulation</div>
-  <h1>2005년에 샀다면<br><em>얼마나 벌었을까?</em></h1>
-  <p class="hero-sub">
-    실제 금리·환율 데이터 기반 시뮬레이션<br>
-    삼성증권 수수료·환전 스프레드·세금까지 반영한 현실적인 계산
-  </p>
+<div class="page-header">
+  <div class="page-header-inner">
+    <div class="page-eyebrow">Historical Simulation</div>
+    <div class="page-title">2005년에 샀다면 얼마나 벌었을까?</div>
+    <div class="page-sub">실제 금리·환율 데이터 · 삼성증권 수수료·세금까지 반영한 현실적인 시뮬레이션</div>
+  </div>
+</div>
+
+<section class="section">
+  <div class="section-inner">
+    <div class="card" style="margin-bottom:16px">
+      <div class="input-grid">
+        <div class="ig"><label>투자금액 (원화)</label>
+          <select id="s-invest">
+            <option value="10000000">1,000만원</option>
+            <option value="30000000" selected>3,000만원</option>
+            <option value="50000000">5,000만원</option>
+            <option value="100000000">1억원</option>
+          </select>
+        </div>
+        <div class="ig"><label>수수료 조건</label>
+          <select id="s-fee">
+            <option value="0.003" selected>영업점 (0.3%)</option>
+            <option value="0.001">MTS (0.1%)</option>
+          </select>
+        </div>
+        <div class="ig"><label>환전 스프레드</label>
+          <select id="s-fx">
+            <option value="0.01" selected>일반 (±1.0%)</option>
+            <option value="0.005">우대 (±0.5%)</option>
+            <option value="0">달러 보유 (0%)</option>
+          </select>
+        </div>
+      </div>
+      <div class="range-row">
+        <label>매도 연도</label>
+        <input type="range" id="s-sellyear" min="2005" max="2020" value="2020" oninput="onSlider()">
+        <div class="range-val" id="s-sellyear-val">2020년</div>
+      </div>
+      <button class="btn" onclick="runSim()">시뮬레이션 실행</button>
+    </div>
+
+    <div id="results-section" style="display:none">
+      <div class="card" style="margin-bottom:16px">
+        <div class="chart-label" style="margin-bottom:12px">연도별 수익률 — 클릭하면 해당 연도로 변경</div>
+        <div class="timeline" id="tl-wrap"></div>
+      </div>
+
+      <div class="result-grid" id="main-results" style="margin-bottom:16px"></div>
+      <div class="best-box" id="breakdown-box"></div>
+
+      <div class="chart-card">
+        <div class="chart-label">연도별 총자산 추이 (원화 환산 · 세후)</div>
+        <div class="chart-canvas-wrap"><canvas id="main-chart"></canvas></div>
+      </div>
+
+      <div class="table-wrap" style="overflow-x:auto">
+        <table class="data-table">
+          <thead><tr><th>연도</th><th>30년물금리</th><th>채권가($)</th><th>원화총자산</th><th>원화수익률</th><th>연환산</th><th>환율</th></tr></thead>
+          <tbody id="tbl-body"></tbody>
+        </table>
+      </div>
+      <div class="info-box">💡 쿠폰 4.5% · 만기 2035년 · 매수환율 1,013원 · 이자소득세 15.4% 차감 · 매매차익 비과세 · 수수료·환전스프레드 반영</div>
+    </div>
+  </div>
 </section>
 
-<div class="wrap">
-
-  <!-- 설정 -->
-  <div class="card">
-    <div class="card-title">투자 조건 설정</div>
-    <div class="input-grid">
-      <div class="ig">
-        <label>투자금액 (원화 ₩)</label>
-        <select id="s-invest">
-          <option value="10000000">1,000만원</option>
-          <option value="30000000" selected>3,000만원</option>
-          <option value="50000000">5,000만원</option>
-          <option value="100000000">1억원</option>
-          <option value="300000000">3억원</option>
-        </select>
-      </div>
-      <div class="ig">
-        <label>채권 종류</label>
-        <select id="s-bond">
-          <option value="30" selected>30년물 (쿠폰 4.5%)</option>
-          <option value="20">20년물 (쿠폰 4.5%)</option>
-        </select>
-      </div>
-      <div class="ig">
-        <label>수수료 조건</label>
-        <select id="s-fee">
-          <option value="0.003" selected>영업점 (0.3%)</option>
-          <option value="0.001">MTS (0.1%)</option>
-          <option value="0.005">프리미엄 (0.5%)</option>
-        </select>
-      </div>
-      <div class="ig">
-        <label>환전 스프레드</label>
-        <select id="s-fx">
-          <option value="0.01" selected>일반 (±1.0%)</option>
-          <option value="0.005">우대 (±0.5%)</option>
-          <option value="0.0">달러 보유 (0%)</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="card-title">매도 연도 선택</div>
-    <div class="range-row">
-      <label>매도 연도</label>
-      <input type="range" id="s-sellyear" min="2005" max="2020" value="2020" oninput="onSlider()">
-      <div class="range-val" id="s-sellyear-val">2020년</div>
-    </div>
-
-    <button class="btn" onclick="runSim()">시뮬레이션 실행</button>
-  </div>
-
-  <!-- 결과 카드 -->
-  <div id="results-section" style="display:none">
-
-    <!-- 타임라인 -->
-    <div class="card">
-      <div class="card-title">연도별 수익률 타임라인 (원화 기준) — 행 클릭으로 연도 변경</div>
-      <div class="timeline" id="tl-wrap"></div>
-    </div>
-
-    <!-- 핵심 결과 -->
-    <div class="result-grid" id="main-results"></div>
-
-    <!-- 수익 분해 -->
-    <div class="best-box" id="breakdown-box"></div>
-
-    <!-- 차트 -->
-    <div class="chart-wrap">
-      <div class="chart-title">연도별 총자산 추이 (원화 환산 · 세후)</div>
-      <div class="chart-canvas-wrap"><canvas id="main-chart"></canvas></div>
-    </div>
-
-    <!-- 상세 테이블 -->
-    <div class="card" style="overflow-x:auto">
-      <div class="card-title">연도별 상세 데이터</div>
-      <table class="data-table">
-        <thead><tr>
-          <th>연도</th><th>30년물 금리</th><th>채권가($)</th>
-          <th>원화총자산</th><th>원화수익률</th><th>연환산</th><th>환율</th>
-        </tr></thead>
-        <tbody id="tbl-body"></tbody>
-      </table>
-    </div>
-
-    <div class="info-box">
-      <strong>💡 계산 가정</strong><br>
-      쿠폰 4.5% · 만기 2035년(30년물 기준) · 매수 시 환율 1,013원/달러 (2005년 기준)<br>
-      이자소득세 15.4% 차감 · 매매차익 비과세 · 수수료·환전스프레드 반영<br>
-      2005년 미국 재무부 30년물 공식 발행 중단 기간 → 유통시장 장기채 기준
-    </div>
-  </div>
-
-</div><!-- /.wrap -->
-
 <footer>
-  USBond.co.kr · <a href="/">계산기 홈</a> · <a href="/privacy.html">개인정보처리방침</a> · <a href="/terms.html">이용약관</a><br>
-  본 시뮬레이션은 교육 목적이며 실제 투자 수익을 보장하지 않습니다 · © 2026 USBond.co.kr
+  <div class="footer-inner">
+    <div class="footer-links">
+      <a href="/">홈</a><a href="/rates.html">실시간 금리</a><a href="/tax-calculator.html">세금 계산기</a>
+      <a href="/etf-vs-direct.html">ETF 비교</a><a href="/fx-simulator.html">환율</a>
+      <a href="/privacy.html">개인정보처리방침</a><a href="/terms.html">이용약관</a>
+    </div>
+    <div class="footer-note">© 2026 USBond.co.kr · 교육 목적 · 투자 권유 아님</div>
+  </div>
 </footer>
 
 <script>
-const FACE=100, TAX=0.154, COUPON=0.045;
-const YIELDS={2005:0.0470,2006:0.0491,2007:0.0484,2008:0.0428,2009:0.0408,
-  2010:0.0425,2011:0.0391,2012:0.0292,2013:0.0345,2014:0.0334,
-  2015:0.0284,2016:0.0260,2017:0.0289,2018:0.0311,2019:0.0258,2020:0.0156};
-const FX={2005:1013,2006:929,2007:938,2008:1259,2009:1167,
-  2010:1134,2011:1153,2012:1071,2013:1055,2014:1099,
-  2015:1172,2016:1208,2017:1071,2018:1118,2019:1158,2020:1088};
-
-const EVENTS={2008:'리먼 파산 · 금융위기',2009:'QE1 시작',2012:'금리 최저권',
-  2013:'테이퍼 탠트럼',2015:'Fed 첫 금리 인상',2020:'코로나19 · 역대 최저'};
+const FACE=100,TAX=0.154,COUPON=0.045;
+const YIELDS={2005:0.0470,2006:0.0491,2007:0.0484,2008:0.0428,2009:0.0408,2010:0.0425,2011:0.0391,2012:0.0292,2013:0.0345,2014:0.0334,2015:0.0284,2016:0.0260,2017:0.0289,2018:0.0311,2019:0.0258,2020:0.0156};
+const FX={2005:1013,2006:929,2007:938,2008:1259,2009:1167,2010:1134,2011:1153,2012:1071,2013:1055,2014:1099,2015:1172,2016:1208,2017:1071,2018:1118,2019:1158,2020:1088};
+const EVENTS={2008:'리먼 파산·금융위기',2009:'QE1 시작',2012:'금리 최저권',2013:'테이퍼 탠트럼',2020:'코로나19·역대 최저'};
+let chartInst=null,simRows=[],sellYear=2020;
 
 function bondPrice(coupon,face,y,n){
   if(n<=0)return face;
@@ -245,61 +176,42 @@ function bondPrice(coupon,face,y,n){
   if(r===0)return c*N+face;
   return c*(1-Math.pow(1+r,-N))/r+face*Math.pow(1+r,-N);
 }
-
-function fmtKRW(n){
-  if(n>=1e8)return (n/1e8).toFixed(2)+'억원';
-  if(n>=1e7)return (n/1e7).toFixed(1)+'천만원';
-  return Math.round(n).toLocaleString()+'원';
-}
-function fmtUSD(n){return '$'+(+n).toLocaleString('en',{minimumFractionDigits:0,maximumFractionDigits:0});}
-
-let chartInst=null;
-let simRows=[];
-let sellYear=2020;
+function fmtKRW(n){if(Math.abs(n)>=1e8)return(n/1e8).toFixed(2)+'억원';if(Math.abs(n)>=1e7)return(n/1e7).toFixed(1)+'천만원';return Math.round(n).toLocaleString()+'원';}
+function fmtUSD(n){return'$'+(+n).toLocaleString('en',{minimumFractionDigits:0,maximumFractionDigits:0});}
 
 function onSlider(){
   sellYear=parseInt(document.getElementById('s-sellyear').value);
   document.getElementById('s-sellyear-val').textContent=sellYear+'년';
-  if(simRows.length) renderResults();
+  if(simRows.length)renderResults();
 }
 
 function runSim(){
   const investKRW=parseFloat(document.getElementById('s-invest').value);
   const fee=parseFloat(document.getElementById('s-fee').value);
   const fxSpread=parseFloat(document.getElementById('s-fx').value);
-
   const buyFX=FX[2005]*(1+fxSpread);
-  const buyYield=YIELDS[2005];
-  const buyPriceRaw=bondPrice(COUPON,FACE,buyYield,30);
+  const buyPriceRaw=bondPrice(COUPON,FACE,YIELDS[2005],30);
   const buyPriceWithFee=buyPriceRaw*(1+fee);
   const investUSD=investKRW/buyFX;
   const units=investUSD/buyPriceWithFee;
-
-  simRows=[];
-  let cumCoupon=0;
-
+  simRows=[];let cumCoupon=0;
   for(let yr=2005;yr<=2020;yr++){
-    const yearsLeft=2035-yr;
-    const mktPrice=bondPrice(COUPON,FACE,YIELDS[yr],yearsLeft);
+    const yl=2035-yr;
+    const mktPrice=bondPrice(COUPON,FACE,YIELDS[yr],yl);
     const annualCoupon=COUPON*FACE*units;
     cumCoupon+=annualCoupon;
     const cumCouponNet=cumCoupon*(1-TAX);
-
     const sellPriceUSD=mktPrice*(1-fee)*units;
     const capGainUSD=sellPriceUSD-investUSD;
     const totalAfterTax=sellPriceUSD+cumCouponNet;
-
     const sellFX=FX[yr]*(1-fxSpread);
     const totalKRW=totalAfterTax*sellFX;
     const retKRW=((totalKRW-investKRW)/investKRW)*100;
     const retUSD=((totalAfterTax-investUSD)/investUSD)*100;
     const hold=yr-2004;
     const annKRW=(Math.pow(totalKRW/investKRW,1/Math.max(hold,1))-1)*100;
-
-    simRows.push({yr,mktPrice:mktPrice.toFixed(2),sellPriceUSD,cumCouponNet,capGainUSD,
-      totalAfterTax,totalKRW,retKRW,retUSD,annKRW,fx:FX[yr],investKRW,investUSD});
+    simRows.push({yr,mktPrice:mktPrice.toFixed(2),sellPriceUSD,cumCouponNet,capGainUSD,totalAfterTax,totalKRW,retKRW,retUSD,annKRW,fx:FX[yr],investKRW,investUSD});
   }
-
   document.getElementById('results-section').style.display='block';
   renderResults();
   document.getElementById('results-section').scrollIntoView({behavior:'smooth',block:'start'});
@@ -308,104 +220,62 @@ function runSim(){
 function renderResults(){
   const row=simRows.find(r=>r.yr===sellYear)||simRows[simRows.length-1];
   const bestRow=[...simRows].sort((a,b)=>b.retKRW-a.retKRW)[0];
-
   // 타임라인
-  const tl=document.getElementById('tl-wrap');
-  tl.innerHTML=simRows.map(r=>{
-    const isSel=r.yr===sellYear, isBest=r.yr===bestRow.yr;
-    const dotCls=isSel?'tl-dot active':isBest?'tl-dot best':'tl-dot';
-    const retColor=r.retKRW>=0?'var(--green)':'var(--red)';
+  document.getElementById('tl-wrap').innerHTML=simRows.map(r=>{
+    const isSel=r.yr===sellYear,isBest=r.yr===bestRow.yr;
+    const dotCls='tl-dot'+(isSel?' active':isBest?' best':'');
+    const retColor=r.retKRW>=0?'var(--green-text)':'var(--red-text)';
     return `<div class="tl-item" onclick="selectYear(${r.yr})">
       <div class="${dotCls}">${String(r.yr).slice(2)}</div>
       <div class="tl-year">${r.yr}</div>
       <div class="tl-ret" style="color:${retColor}">${r.retKRW>=0?'+':''}${r.retKRW.toFixed(0)}%</div>
     </div>`;
   }).join('');
-
-  // 핵심 결과
+  // 결과 카드
   const profitKRW=row.totalKRW-row.investKRW;
   document.getElementById('main-results').innerHTML=`
-    <div class="ri"><div class="rl">투자 원금</div><div class="rv gold">${fmtKRW(row.investKRW)}</div><div class="rs">${fmtUSD(row.investUSD)} (2005년 환율 기준)</div></div>
-    <div class="ri"><div class="rl">${sellYear}년 매도 시 총자산</div><div class="rv gold">${fmtKRW(row.totalKRW)}</div><div class="rs">${fmtUSD(row.totalAfterTax)} · 세후</div></div>
-    <div class="ri"><div class="rl">원화 수익률</div><div class="rv ${row.retKRW>=0?'pos':'neg'}">${row.retKRW>=0?'+':''}${row.retKRW.toFixed(1)}%</div><div class="rs">연환산 ${row.annKRW.toFixed(1)}%</div></div>
-    <div class="ri"><div class="rl">총 수익금 (원화)</div><div class="rv ${profitKRW>=0?'pos':'neg'}">${profitKRW>=0?'+':''}${fmtKRW(profitKRW)}</div><div class="rs">달러 수익률 ${row.retUSD>=0?'+':''}${row.retUSD.toFixed(1)}%</div></div>
-  `;
-
-  // 수익 분해
+    <div class="ri"><div class="rl">투자 원금</div><div class="rv" style="color:var(--text)">${fmtKRW(row.investKRW)}</div><div class="rs">${fmtUSD(row.investUSD)} (2005년 환율)</div></div>
+    <div class="ri"><div class="rl">${sellYear}년 매도 시 총자산</div><div class="rv" style="color:var(--blue-text)">${fmtKRW(row.totalKRW)}</div><div class="rs">${fmtUSD(row.totalAfterTax)} · 세후</div></div>
+    <div class="ri ${row.retKRW>=0?'green':''}"><div class="rl">원화 수익률</div><div class="rv" style="color:${row.retKRW>=0?'var(--green-text)':'var(--red-text)'}">${row.retKRW>=0?'+':''}${row.retKRW.toFixed(1)}%</div><div class="rs">연환산 ${row.annKRW.toFixed(1)}%</div></div>
+    <div class="ri"><div class="rl">총 수익금 (원화)</div><div class="rv" style="color:${profitKRW>=0?'var(--green-text)':'var(--red-text)'}">${profitKRW>=0?'+':''}${fmtKRW(profitKRW)}</div><div class="rs">달러 수익률 ${row.retUSD>=0?'+':''}${row.retUSD.toFixed(1)}%</div></div>`;
+  // 분해 박스
   const capKRW=row.capGainUSD*(FX[sellYear]||1088);
   const couponKRW=row.cumCouponNet*(FX[sellYear]||1088);
   document.getElementById('breakdown-box').innerHTML=`
-    <strong>📊 ${sellYear}년 수익 분해</strong> &nbsp;|&nbsp;
+    📊 <strong>${sellYear}년 수익 분해</strong> &nbsp;|&nbsp;
     자본차익(비과세): <strong>+${fmtKRW(capKRW)}</strong> &nbsp;|&nbsp;
     쿠폰수익(세후): <strong>+${fmtKRW(couponKRW)}</strong><br>
-    환율: 매수 1,013원 → 매도 ${FX[sellYear]}원
-    ${FX[sellYear]>1013?' <span style="color:var(--green)">▲ 환차익 발생</span>':' <span style="color:var(--red)">▼ 환차손 발생</span>'}
-    &nbsp;|&nbsp; 최적 매도 시점: <strong style="color:var(--green)">${bestRow.yr}년 (+${bestRow.retKRW.toFixed(1)}%)</strong>
-    ${EVENTS[sellYear]?`<br>📌 ${sellYear}년 이슈: <em style="color:var(--gold)">${EVENTS[sellYear]}</em>`:''}
-  `;
-
+    환율: 매수 1,013원 → 매도 ${FX[sellYear]}원 ${FX[sellYear]>1013?'▲ 환차익':'▼ 환차손'}
+    &nbsp;|&nbsp; 최적 매도: <strong>${bestRow.yr}년 (+${bestRow.retKRW.toFixed(1)}%)</strong>
+    ${EVENTS[sellYear]?`<br>📌 ${sellYear}년: ${EVENTS[sellYear]}`:''}`;
   // 차트
   const labels=simRows.map(r=>r.yr+'년');
   const assetData=simRows.map(r=>Math.round(r.totalKRW));
   const principalData=simRows.map(r=>r.investKRW);
-
   if(chartInst)chartInst.destroy();
-  const ctx=document.getElementById('main-chart').getContext('2d');
-  chartInst=new Chart(ctx,{
+  chartInst=new Chart(document.getElementById('main-chart').getContext('2d'),{
     type:'line',
-    data:{
-      labels,
-      datasets:[
-        {label:'총자산(원화)',data:assetData,borderColor:'#c9a84c',backgroundColor:'rgba(201,168,76,0.08)',borderWidth:2.5,pointRadius:4,pointBackgroundColor:'#c9a84c',tension:0.3,fill:true},
-        {label:'투자원금',data:principalData,borderColor:'rgba(255,255,255,0.2)',borderWidth:1.5,borderDash:[5,4],pointRadius:0,tension:0},
-      ]
-    },
-    options:{
-      responsive:true,maintainAspectRatio:false,
-      plugins:{
-        legend:{labels:{color:'#6b7fa0',font:{size:11}}},
-        tooltip:{
-          backgroundColor:'#0f1e3a',borderColor:'#334155',borderWidth:1,
-          titleColor:'#94a3b8',bodyColor:'#e2e8f0',
-          callbacks:{label:ctx=>{
-            const v=ctx.parsed.y;
-            return ctx.dataset.label+': '+(v>=1e8?(v/1e8).toFixed(2)+'억원':(v/1e7).toFixed(1)+'천만원');
-          }}
-        }
-      },
-      scales:{
-        x:{ticks:{color:'#475569',font:{size:10}},grid:{color:'rgba(255,255,255,0.05)'}},
-        y:{ticks:{color:'#475569',font:{size:10},callback:v=>v>=1e8?(v/1e8).toFixed(1)+'억':(v/1e7).toFixed(0)+'천만'},grid:{color:'rgba(255,255,255,0.05)'}}
-      }
-    }
+    data:{labels,datasets:[
+      {label:'총자산(원화)',data:assetData,borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,0.08)',borderWidth:2.5,pointRadius:4,pointBackgroundColor:'#2563eb',fill:true,tension:0.3},
+      {label:'투자원금',data:principalData,borderColor:'rgba(0,0,0,0.15)',borderWidth:1.5,borderDash:[5,4],pointRadius:0}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#3f3f46',font:{size:11}}},tooltip:{backgroundColor:'#fff',borderColor:'#e4e4e7',borderWidth:1,titleColor:'#3f3f46',bodyColor:'#09090b',callbacks:{label:ctx=>{const v=ctx.parsed.y;return ctx.dataset.label+': '+(v>=1e8?(v/1e8).toFixed(2)+'억원':(v/1e7).toFixed(1)+'천만원');}}}},scales:{x:{ticks:{color:'#71717a',font:{size:10}},grid:{color:'rgba(0,0,0,0.04)'}},y:{ticks:{color:'#71717a',font:{size:10},callback:v=>v>=1e8?(v/1e8).toFixed(1)+'억':(v/1e7).toFixed(0)+'천만'},grid:{color:'rgba(0,0,0,0.04)'}}}}
   });
-
   // 테이블
-  const tbody=document.getElementById('tbl-body');
-  tbody.innerHTML=simRows.map(r=>{
-    const isSel=r.yr===sellYear, isBest=r.yr===bestRow.yr&&!isSel;
+  document.getElementById('tbl-body').innerHTML=simRows.map(r=>{
+    const isSel=r.yr===sellYear,isBest=r.yr===bestRow.yr&&!isSel;
     return `<tr class="${isSel?'sel':isBest?'best':''}" onclick="selectYear(${r.yr})">
-      <td style="color:${isSel?'var(--gold)':isBest?'var(--green)':'var(--text-dim)'};font-weight:${isSel||isBest?700:400}">
-        ${r.yr}${isBest?' 🏆':''}${isSel&&!isBest?' ◀':''}
-      </td>
-      <td style="color:var(--text-muted)">${(YIELDS[r.yr]*100).toFixed(2)}%</td>
+      <td style="font-weight:${isSel||isBest?700:400};color:${isSel?'var(--blue-text)':isBest?'var(--green-text)':'var(--text2)'}">${r.yr}${isBest?' 🏆':''}${isSel&&!isBest?' ◀':''}</td>
+      <td style="color:var(--text3)">${(YIELDS[r.yr]*100).toFixed(2)}%</td>
       <td>$${r.mktPrice}</td>
-      <td style="color:var(--text)">${fmtKRW(r.totalKRW)}</td>
-      <td style="color:${r.retKRW>=0?'var(--green)':'var(--red)'};font-weight:600">${r.retKRW>=0?'+':''}${r.retKRW.toFixed(1)}%</td>
-      <td style="color:var(--text-muted)">${r.annKRW.toFixed(1)}%</td>
-      <td style="color:var(--text-muted)">${r.fx}원</td>
+      <td>${fmtKRW(r.totalKRW)}</td>
+      <td style="color:${r.retKRW>=0?'var(--green-text)':'var(--red-text)'};font-weight:600">${r.retKRW>=0?'+':''}${r.retKRW.toFixed(1)}%</td>
+      <td style="color:var(--text3)">${r.annKRW.toFixed(1)}%</td>
+      <td style="color:var(--text3)">${r.fx}원</td>
     </tr>`;
   }).join('');
 }
-
-function selectYear(yr){
-  sellYear=yr;
-  document.getElementById('s-sellyear').value=yr;
-  document.getElementById('s-sellyear-val').textContent=yr+'년';
-  renderResults();
-}
-
-// 초기 실행
+function selectYear(yr){sellYear=yr;document.getElementById('s-sellyear').value=yr;document.getElementById('s-sellyear-val').textContent=yr+'년';renderResults();}
 runSim();
 </script>
 </body>

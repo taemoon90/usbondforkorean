@@ -4,445 +4,309 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ETF vs 직접매수 비교 | USBond.co.kr</title>
-<meta name="description" content="TLT ETF와 삼성증권 미국채 직접매수, 세후 수익률을 정확하게 비교해보세요. 매매차익 비과세 혜택이 얼마나 차이를 만드는지 계산합니다.">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<meta name="description" content="TLT ETF와 삼성증권 미국채 직접매수 세후 수익률 정확 비교. 매매차익 비과세 혜택이 얼마나 차이를 만드는지 계산합니다.">
+<link rel="canonical" href="https://usbond.co.kr/etf-vs-direct.html">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4629563432953818" crossorigin="anonymous"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@300;400;500&family=Lora:ital,wght@0,600;0,700;1,500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-  :root{
-    --gold:#c9a84c;--gold-light:#e8c96a;--gold-dim:rgba(201,168,76,0.13);
-    --navy:#060d1f;--navy2:#0b1630;--navy3:#0f1e3a;
-    --text:#dce4f0;--text-dim:#6b7fa0;--text-muted:#3a4d6a;
-    --green:#3dd68c;--red:#f06070;--blue:#4d9fff;--purple:#a78bfa;--orange:#fb923c;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:'Noto Serif KR',serif;background:var(--navy);color:var(--text);min-height:100vh;}
-  nav{position:sticky;top:0;z-index:100;background:rgba(6,13,31,0.93);backdrop-filter:blur(16px);border-bottom:1px solid rgba(201,168,76,0.18);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:58px;}
-  .nav-logo{font-size:18px;font-weight:700;color:var(--gold);text-decoration:none;}
-  .nav-back{font-size:12px;color:var(--text-dim);text-decoration:none;font-family:'DM Mono',monospace;}
-  .nav-back:hover{color:var(--gold);}
-
-  .hero{padding:60px 24px 44px;text-align:center;background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(201,168,76,0.07) 0%,transparent 70%);}
-  .badge{display:inline-block;background:var(--gold-dim);border:1px solid rgba(201,168,76,0.35);border-radius:2px;padding:3px 14px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:18px;}
-  h1{font-family:'Playfair Display',serif;font-size:clamp(22px,5vw,42px);font-weight:900;color:#f0f4ff;line-height:1.2;margin-bottom:12px;}
-  h1 em{color:var(--gold);font-style:normal;}
-  .hero-sub{color:var(--text-dim);font-size:13px;line-height:1.8;max-width:540px;margin:0 auto;}
-
-  .wrap{max-width:960px;margin:0 auto;padding:0 16px 80px;}
-  .card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:22px;margin-bottom:16px;}
-  .card-title{font-size:11px;letter-spacing:2px;color:var(--text-muted);text-transform:uppercase;font-family:'DM Mono',monospace;margin-bottom:16px;}
-
-  /* VS 헤더 */
-  .vs-header{display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;margin-bottom:20px;}
-  .vs-side{border-radius:12px;padding:18px;text-align:center;}
-  .vs-side.direct{background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);}
-  .vs-side.etf{background:rgba(77,159,255,0.08);border:1px solid rgba(77,159,255,0.25);}
-  .vs-name{font-size:14px;font-weight:700;margin-bottom:4px;}
-  .vs-sub{font-size:11px;color:var(--text-muted);line-height:1.7;}
-  .vs-badge{font-size:10px;border-radius:3px;padding:2px 8px;display:inline-block;margin-top:6px;font-family:'DM Mono',monospace;}
-  .vs-badge.green{background:rgba(61,214,140,0.15);color:var(--green);}
-  .vs-badge.blue{background:rgba(77,159,255,0.15);color:var(--blue);}
-  .vs-divider{font-family:'Playfair Display',serif;font-size:28px;font-weight:900;color:var(--text-muted);text-align:center;}
-
-  .input-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:20px;}
-  .ig label{font-size:11px;color:var(--text-dim);display:block;margin-bottom:6px;font-family:'DM Mono',monospace;}
-  .ig input,.ig select{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:9px 12px;color:var(--text);font-size:13px;font-family:'DM Mono',monospace;-webkit-appearance:none;}
-  .ig input:focus,.ig select:focus{outline:none;border-color:var(--gold);}
-
-  .btn{width:100%;padding:13px;background:var(--gold);color:var(--navy);border:none;border-radius:8px;font-size:14px;font-weight:700;font-family:'Noto Serif KR',serif;cursor:pointer;transition:all 0.2s;}
-  .btn:hover{background:var(--gold-light);transform:translateY(-1px);}
-
-  /* 결과 카드 2분할 */
-  .result-split{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;}
-  .rs-card{border-radius:12px;padding:20px;}
-  .rs-card.direct{background:rgba(201,168,76,0.07);border:2px solid rgba(201,168,76,0.25);}
-  .rs-card.etf{background:rgba(77,159,255,0.07);border:2px solid rgba(77,159,255,0.25);}
-  .rs-name{font-size:11px;font-family:'DM Mono',monospace;letter-spacing:1px;margin-bottom:10px;}
-  .rs-total{font-size:clamp(18px,3vw,26px);font-family:'DM Mono',monospace;font-weight:700;margin-bottom:4px;}
-  .rs-return{font-size:20px;font-weight:700;margin-bottom:8px;}
-  .rs-breakdown{font-size:11px;color:var(--text-dim);line-height:1.9;font-family:'DM Mono',monospace;}
-
-  /* 승자 박스 */
-  .winner-box{border-radius:10px;padding:16px 20px;margin:16px 0;text-align:center;}
-  .winner-box.direct-wins{background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.3);}
-  .winner-box.etf-wins{background:rgba(77,159,255,0.08);border:1px solid rgba(77,159,255,0.3);}
-  .winner-title{font-size:16px;font-weight:700;margin-bottom:6px;}
-  .winner-sub{font-size:13px;color:var(--text-dim);}
-
-  /* 차트 */
-  .chart-wrap{background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:20px 16px;margin-bottom:16px;} .chart-canvas-wrap{position:relative;height:260px;width:100%;}
-  .chart-title{font-size:11px;color:var(--text-dim);margin-bottom:16px;font-family:'DM Mono',monospace;letter-spacing:1px;}
-
-  /* 비교 항목표 */
-  .compare-table{width:100%;border-collapse:collapse;font-size:12px;}
-  .compare-table th{padding:10px 14px;font-weight:400;font-family:'DM Mono',monospace;font-size:10px;border-bottom:1px solid rgba(255,255,255,0.08);color:var(--text-muted);}
-  .compare-table td{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.04);}
-  .compare-table td:first-child{color:var(--text-dim);}
-  .compare-table .good{color:var(--green);font-weight:600;}
-  .compare-table .bad{color:var(--red);}
-  .compare-table .neutral{color:var(--text-muted);}
-
-  /* 연도별 테이블 */
-  .data-table{width:100%;border-collapse:collapse;font-size:12px;}
-  .data-table th{padding:8px 10px;text-align:right;color:var(--text-muted);font-weight:400;font-family:'DM Mono',monospace;font-size:10px;border-bottom:1px solid rgba(255,255,255,0.08);}
-  .data-table th:first-child{text-align:left;}
-  .data-table td{padding:8px 10px;text-align:right;border-bottom:1px solid rgba(255,255,255,0.04);font-family:'DM Mono',monospace;color:var(--text);}
-  .data-table td:first-child{text-align:left;color:var(--text-dim);}
-  .data-table tr:hover td{background:rgba(255,255,255,0.03);}
-  .data-table tr.direct-better td:first-child{border-left:3px solid var(--gold);}
-  .data-table tr.etf-better td:first-child{border-left:3px solid var(--blue);}
-
-  .info-box{background:rgba(77,159,255,0.07);border:1px solid rgba(77,159,255,0.2);border-radius:8px;padding:14px 16px;font-size:12px;color:var(--text-dim);line-height:1.8;margin-top:14px;}
-  .info-box strong{color:var(--blue);}
-
-  .range-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
-  .range-row label{font-size:11px;color:var(--text-dim);font-family:'DM Mono',monospace;min-width:80px;}
-  .range-row input[type=range]{flex:1;accent-color:var(--gold);}
-  .range-val{font-family:'DM Mono',monospace;font-size:14px;color:var(--gold);min-width:60px;text-align:right;}
-
-  footer{border-top:1px solid rgba(255,255,255,0.06);padding:28px 24px;text-align:center;font-size:11px;color:var(--text-muted);font-family:'DM Mono',monospace;line-height:2;}
-  footer a{color:var(--gold);text-decoration:none;}
-
-  @media(max-width:600px){
-    .result-split{grid-template-columns:1fr;}
-    .vs-header{grid-template-columns:1fr;gap:8px;}
-    .vs-divider{display:none;}
-    .input-grid{grid-template-columns:1fr 1fr;}
-  }
+:root{--bg:#f4f4f5;--surface:#fff;--border:#e4e4e7;--border2:#d4d4d8;--text:#09090b;--text2:#3f3f46;--text3:#71717a;--green:#22c55e;--green-bg:#dcfce7;--green-text:#15803d;--green-border:#bbf7d0;--blue:#2563eb;--blue-bg:#dbeafe;--blue-text:#1d4ed8;--blue-border:#bfdbfe;--red:#ef4444;--red-bg:#fee2e2;--red-text:#dc2626;--red-border:#fecaca;--amber:#f59e0b;--amber-bg:#fef3c7;--amber-text:#b45309;--amber-border:#fde68a;--radius:10px;--radius-sm:6px;--radius-lg:14px;--shadow:0 1px 3px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.06);--shadow-md:0 4px 6px rgba(0,0,0,0.07),0 2px 4px rgba(0,0,0,0.06);}
+*{box-sizing:border-box;margin:0;padding:0;}html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:58px;}
+.nav-logo{display:flex;align-items:baseline;gap:8px;text-decoration:none;}
+.nav-logo-main{font-family:'Lora',serif;font-size:18px;font-weight:700;color:var(--text);}
+.nav-logo-sub{font-size:12px;color:var(--text3);}
+.nav-back{font-size:13px;color:var(--text2);text-decoration:none;padding:6px 12px;border-radius:var(--radius-sm);border:1px solid var(--border);transition:all 0.15s;}
+.nav-back:hover{background:var(--bg);}
+.page-header{background:var(--surface);border-bottom:1px solid var(--border);padding:40px 24px 32px;}
+.page-header-inner{max-width:960px;margin:0 auto;}
+.page-eyebrow{font-size:11px;font-weight:600;color:var(--green-text);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;}
+.page-title{font-family:'Lora',serif;font-size:clamp(22px,4vw,34px);font-weight:700;color:var(--text);margin-bottom:8px;}
+.page-sub{font-size:14px;color:var(--text3);line-height:1.7;}
+.section{padding:40px 24px;}
+.section-inner{max-width:960px;margin:0 auto;}
+.divider{border:none;border-top:1px solid var(--border);}
+/* VS 헤더 */
+.vs-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;margin-bottom:24px;}
+.vs-card{border-radius:var(--radius-lg);padding:20px 24px;border:1.5px solid;}
+.vs-card.direct{background:var(--green-bg);border-color:var(--green-border);}
+.vs-card.etf{background:var(--blue-bg);border-color:var(--blue-border);}
+.vs-name{font-size:15px;font-weight:700;margin-bottom:6px;}
+.vs-item{font-size:12px;color:var(--text2);line-height:1.8;}
+.vs-badge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:4px;display:inline-block;margin-top:8px;}
+.vs-divider{font-family:'Lora',serif;font-size:28px;font-weight:700;color:var(--text3);text-align:center;}
+/* 카드 */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;box-shadow:var(--shadow);margin-bottom:16px;}
+.input-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:16px;}
+.ig label{font-size:12px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px;}
+.ig input,.ig select{width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;color:var(--text);font-size:13px;font-family:'DM Mono',monospace;-webkit-appearance:none;transition:border-color 0.15s;}
+.ig input:focus,.ig select:focus{outline:none;border-color:var(--blue);}
+.range-row{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.range-row label{font-size:12px;font-weight:600;color:var(--text2);min-width:80px;}
+.range-row input[type=range]{flex:1;accent-color:var(--blue);}
+.range-val{font-family:'DM Mono',monospace;font-size:15px;font-weight:700;color:var(--blue);min-width:60px;text-align:right;}
+.btn{width:100%;padding:12px;background:var(--text);color:#fff;border:none;border-radius:var(--radius);font-size:14px;font-weight:700;cursor:pointer;transition:all 0.15s;}
+.btn:hover{background:var(--text2);transform:translateY(-1px);}
+/* 결과 */
+.result-split{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;}
+.rs-card{border-radius:var(--radius-lg);padding:20px 22px;border:1.5px solid;}
+.rs-card.direct{background:var(--green-bg);border-color:var(--green-border);}
+.rs-card.etf{background:var(--blue-bg);border-color:var(--blue-border);}
+.rs-name{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;}
+.rs-total{font-size:22px;font-family:'DM Mono',monospace;font-weight:700;margin-bottom:4px;}
+.rs-return{font-size:18px;font-weight:700;margin-bottom:10px;}
+.rs-detail{font-size:11px;color:var(--text2);line-height:1.8;font-family:'DM Mono',monospace;}
+.winner-box{border-radius:var(--radius);padding:14px 20px;margin-bottom:16px;font-size:14px;font-weight:600;text-align:center;}
+.winner-box.direct{background:var(--green-bg);border:1.5px solid var(--green-border);color:var(--green-text);}
+.winner-box.etf{background:var(--blue-bg);border:1.5px solid var(--blue-border);color:var(--blue-text);}
+/* 차트 */
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;box-shadow:var(--shadow);margin-bottom:16px;}
+.chart-label{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:16px;}
+.chart-canvas-wrap{position:relative;height:260px;width:100%;}
+/* 비교표 */
+.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow);margin-bottom:16px;}
+.cmp-table{width:100%;border-collapse:collapse;font-size:13px;}
+.cmp-table th{padding:10px 14px;font-size:11px;font-weight:700;color:var(--text2);background:var(--bg);text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid var(--border);}
+.cmp-table td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--text2);}
+.cmp-table tr:last-child td{border-bottom:none;}
+.cmp-table tr:hover td{background:var(--bg);}
+/* 연도별 테이블 */
+.data-table{width:100%;border-collapse:collapse;font-size:12px;}
+.data-table th{padding:9px 12px;text-align:right;background:var(--bg);font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid var(--border);}
+.data-table th:first-child{text-align:left;}
+.data-table td{padding:9px 12px;text-align:right;border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;color:var(--text);}
+.data-table td:first-child{text-align:left;font-family:'DM Sans',sans-serif;}
+.data-table tr:hover td{background:var(--bg);}
+.data-table tr.d-better td:first-child{border-left:3px solid var(--green);}
+.data-table tr.e-better td:first-child{border-left:3px solid var(--blue);}
+.info-box{background:var(--blue-bg);border:1px solid var(--blue-border);border-radius:var(--radius);padding:14px 18px;font-size:13px;color:var(--blue-text);line-height:1.8;margin-top:14px;}
+footer{background:var(--text);color:rgba(255,255,255,0.6);padding:32px 24px;}
+.footer-inner{max-width:960px;margin:0 auto;display:flex;flex-direction:column;gap:16px;}
+.footer-links{display:flex;flex-wrap:wrap;gap:14px;}
+.footer-links a{font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;}
+.footer-links a:hover{color:#fff;}
+.footer-note{font-size:12px;color:rgba(255,255,255,0.35);line-height:1.8;border-top:1px solid rgba(255,255,255,0.1);padding-top:16px;}
+@media(max-width:640px){.vs-grid{grid-template-columns:1fr;}.vs-divider{display:none;}.result-split{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
-
 <nav>
-  <a href="/" class="nav-logo">USBond</a>
-  <a href="/" class="nav-back">← 계산기 홈</a>
+  <a href="/" class="nav-logo"><span class="nav-logo-main">USBond</span><span class="nav-logo-sub">미국채 계산기</span></a>
+  <a href="/" class="nav-back">← 홈으로</a>
 </nav>
 
-<section class="hero">
-  <div class="badge">ETF vs Direct</div>
-  <h1>TLT ETF vs<br><em>직접매수</em> 세후 비교</h1>
-  <p class="hero-sub">
-    매매차익 비과세 혜택이 실제로 얼마나 차이를 만드는지<br>
-    동일 조건에서 정확하게 계산합니다
-  </p>
-</section>
-
-<div class="wrap">
-
-  <!-- VS 헤더 -->
-  <div class="vs-header">
-    <div class="vs-side direct">
-      <div class="vs-name" style="color:var(--gold)">삼성증권 직접매수</div>
-      <div class="vs-sub">
-        특정 만기 채권 직접 보유<br>
-        쿠폰: 이자소득세 15.4%<br>
-        매매차익: <strong style="color:var(--green)">비과세</strong>
-      </div>
-      <span class="vs-badge green">매매차익 비과세</span>
-    </div>
-    <div class="vs-divider">VS</div>
-    <div class="vs-side etf">
-      <div class="vs-name" style="color:var(--blue)">TLT ETF</div>
-      <div class="vs-sub">
-        20년+ 미국채 ETF 자동 운용<br>
-        배당소득세 15.4% (전체 수익)<br>
-        운용보수: 연 0.15%
-      </div>
-      <span class="vs-badge blue">소액투자 · 높은유동성</span>
-    </div>
+<div class="page-header">
+  <div class="page-header-inner">
+    <div class="page-eyebrow">ETF vs Direct</div>
+    <div class="page-title">TLT ETF vs 삼성증권 직접매수</div>
+    <div class="page-sub">매매차익 비과세 혜택이 실제로 얼마나 차이를 만드는지 동일 조건에서 정확하게 계산합니다</div>
   </div>
+</div>
 
-  <!-- 입력 -->
-  <div class="card">
-    <div class="card-title">투자 조건 설정</div>
-    <div class="input-grid">
-      <div class="ig">
-        <label>투자금액 ($)</label>
-        <input type="number" id="e-invest" value="100000" step="10000">
+<section class="section">
+  <div class="section-inner">
+    <div class="vs-grid">
+      <div class="vs-card direct">
+        <div class="vs-name" style="color:var(--green-text)">삼성증권 직접매수</div>
+        <div class="vs-item">쿠폰: 이자소득세 15.4%<br>매매차익: <strong style="color:var(--green-text)">비과세 ✅</strong><br>운용보수: 없음</div>
+        <span class="vs-badge" style="background:var(--green-bg);color:var(--green-text);border:1px solid var(--green-border)">매매차익 비과세</span>
       </div>
-      <div class="ig">
-        <label>채권 쿠폰 (%)</label>
-        <select id="e-coupon">
-          <option value="4.75">4.750% (T 4.75/2055 신규)</option>
-          <option value="4.125" selected>4.125% (T 4.125/2053 보유)</option>
-          <option value="4.375">4.375% (T 4.375/2043 보유)</option>
-          <option value="2.0">2.000% (T 2.00/2050 저쿠폰)</option>
-          <option value="1.875">1.875% (T 1.875/2051 초저쿠폰)</option>
-        </select>
-      </div>
-      <div class="ig">
-        <label>직접매수 매수가 ($)</label>
-        <input type="number" id="e-buyprice" value="85" step="0.5">
-      </div>
-      <div class="ig">
-        <label>TLT 매수가 ($)</label>
-        <input type="number" id="e-tltbuy" value="88" step="0.5">
-      </div>
-      <div class="ig">
-        <label>채권 만기 연도</label>
-        <input type="number" id="e-maturity" value="2053">
-      </div>
-      <div class="ig">
-        <label>TLT 매도가 (시나리오)</label>
-        <select id="e-tltsell">
-          <option value="120">$120 (금리 3.5% 수준)</option>
-          <option value="140">$140 (금리 3.0% 수준)</option>
-          <option value="162" selected>$162 (금리 2.0% 수준)</option>
-          <option value="185">$185 (금리 1.0% 수준)</option>
-        </select>
+      <div class="vs-divider">VS</div>
+      <div class="vs-card etf">
+        <div class="vs-name" style="color:var(--blue-text)">TLT ETF</div>
+        <div class="vs-item">전체 수익: 배당소득세 15.4%<br>운용보수: 연 0.15%<br>높은 유동성 · 소액 가능</div>
+        <span class="vs-badge" style="background:var(--blue-bg);color:var(--blue-text);border:1px solid var(--blue-border)">유동성 높음</span>
       </div>
     </div>
 
-    <div class="range-row">
-      <label>보유 기간</label>
-      <input type="range" id="e-hold" min="1" max="20" value="10" oninput="document.getElementById('e-hold-val').textContent=this.value+'년'">
-      <div class="range-val" id="e-hold-val">10년</div>
-    </div>
-    <div class="range-row">
-      <label>매도 시 금리</label>
-      <input type="range" id="e-sellyield" min="0.5" max="5.5" step="0.1" value="2.0" oninput="document.getElementById('e-sy-val').textContent=parseFloat(this.value).toFixed(1)+'%'">
-      <div class="range-val" id="e-sy-val">2.0%</div>
-    </div>
-
-    <button class="btn" onclick="calcCompare()">비교 계산하기</button>
-  </div>
-
-  <!-- 결과 -->
-  <div id="results" style="display:none">
-
-    <!-- 결과 2분할 -->
-    <div class="result-split" id="result-split"></div>
-
-    <!-- 승자 -->
-    <div class="winner-box" id="winner-box"></div>
-
-    <!-- 차트 -->
-    <div class="chart-wrap">
-      <div class="chart-title">보유 기간별 세후 총수익률 비교</div>
-      <div class="chart-canvas-wrap"><canvas id="compare-chart"></canvas></div>
-    </div>
-
-    <!-- 항목별 비교표 -->
     <div class="card">
-      <div class="card-title">항목별 상세 비교</div>
-      <div style="overflow-x:auto">
-        <table class="compare-table" id="compare-table">
-          <thead><tr><th>항목</th><th style="color:var(--gold)">직접매수</th><th style="color:var(--blue)">TLT ETF</th><th>비고</th></tr></thead>
+      <div class="input-grid">
+        <div class="ig"><label>투자금액 ($)</label><input type="number" id="e-invest" value="100000" step="10000"></div>
+        <div class="ig"><label>채권 쿠폰 (%)</label>
+          <select id="e-coupon">
+            <option value="1.25" selected>1.25% (T1.25/2050 저쿠폰)</option>
+            <option value="4.125">4.125% (T4.125/2053)</option>
+            <option value="4.75">4.750% (T4.75/2055 신규)</option>
+          </select>
+        </div>
+        <div class="ig"><label>직접매수 매수가 ($)</label><input type="number" id="e-buyprice" value="47.81" step="0.5"></div>
+        <div class="ig"><label>TLT 매수가 ($)</label><input type="number" id="e-tltbuy" value="88" step="0.5"></div>
+        <div class="ig"><label>TLT 매도가 (시나리오)</label>
+          <select id="e-tltsell">
+            <option value="120">$120 (금리 3.5%)</option>
+            <option value="140">$140 (금리 3.0%)</option>
+            <option value="162" selected>$162 (금리 2.0%)</option>
+            <option value="185">$185 (금리 1.0%)</option>
+          </select>
+        </div>
+        <div class="ig"><label>채권 만기 연도</label><input type="number" id="e-maturity" value="2050"></div>
+      </div>
+      <div class="range-row">
+        <label>보유 기간</label>
+        <input type="range" id="e-hold" min="1" max="20" value="10" oninput="document.getElementById('e-hold-val').textContent=this.value+'년'">
+        <div class="range-val" id="e-hold-val">10년</div>
+      </div>
+      <div class="range-row">
+        <label>매도 시 금리</label>
+        <input type="range" id="e-sellyield" min="0.5" max="5.5" step="0.1" value="2.0" oninput="document.getElementById('e-sy-val').textContent=parseFloat(this.value).toFixed(1)+'%'">
+        <div class="range-val" id="e-sy-val">2.0%</div>
+      </div>
+      <button class="btn" onclick="calcCompare()">비교 계산하기</button>
+    </div>
+
+    <div id="results" style="display:none">
+      <div class="result-split" id="result-split"></div>
+      <div class="winner-box" id="winner-box"></div>
+
+      <div class="chart-card">
+        <div class="chart-label">보유 기간별 세후 총수익률 비교</div>
+        <div class="chart-canvas-wrap"><canvas id="compare-chart"></canvas></div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="cmp-table">
+          <thead><tr><th>항목</th><th style="color:var(--green-text)">직접매수</th><th style="color:var(--blue-text)">TLT ETF</th><th>비고</th></tr></thead>
           <tbody id="compare-tbody"></tbody>
         </table>
       </div>
-    </div>
 
-    <!-- 연도별 테이블 -->
-    <div class="card" style="overflow-x:auto">
-      <div class="card-title">연도별 세후 수익 비교</div>
-      <table class="data-table">
-        <thead><tr>
-          <th>보유기간</th>
-          <th style="color:var(--gold)">직접매수 총수익률</th>
-          <th style="color:var(--gold)">직접매수 총액($)</th>
-          <th style="color:var(--blue)">TLT ETF 총수익률</th>
-          <th style="color:var(--blue)">TLT ETF 총액($)</th>
-          <th>우위</th>
-        </tr></thead>
-        <tbody id="yearly-tbody"></tbody>
-      </table>
-    </div>
+      <div class="table-wrap" style="overflow-x:auto">
+        <table class="data-table">
+          <thead><tr>
+            <th>보유기간</th>
+            <th style="color:var(--green-text)">직접매수 수익률</th>
+            <th style="color:var(--green-text)">직접매수 총액</th>
+            <th style="color:var(--blue-text)">TLT 수익률</th>
+            <th style="color:var(--blue-text)">TLT 총액</th>
+            <th>우위</th>
+          </tr></thead>
+          <tbody id="yearly-tbody"></tbody>
+        </table>
+      </div>
 
-    <div class="info-box">
-      <strong>💡 계산 방법</strong><br>
-      <strong>직접매수:</strong> 쿠폰 이자소득세 15.4% 차감 · 매매차익 비과세 · DCF 채권가격 계산<br>
-      <strong>TLT ETF:</strong> 배당소득세 15.4% 차감 · 운용보수 0.15%/년 누적 차감 · 매도가는 설정값 기준<br>
-      환율 변동 미반영 (달러 기준) · 실제 거래 시 스프레드·수수료 추가
+      <div class="info-box">💡 <strong>계산 방법</strong> — 직접매수: 쿠폰 15.4% 차감·매매차익 비과세·DCF 가격 계산 / TLT ETF: 배당소득세 15.4%·운용보수 0.15%/년 누적 차감. 환율 변동 미반영(달러 기준)</div>
     </div>
   </div>
-
-</div>
+</section>
 
 <footer>
-  USBond.co.kr · <a href="/">계산기 홈</a> · <a href="/rates.html">실시간 금리</a> · <a href="/tax-calculator.html">세금 계산기</a> · <a href="/privacy.html">개인정보처리방침</a><br>
-  본 계산기는 교육 목적이며 투자 권유가 아닙니다 · © 2026 USBond.co.kr
+  <div class="footer-inner">
+    <div class="footer-links">
+      <a href="/">홈</a><a href="/rates.html">실시간 금리</a><a href="/simulator2005.html">2005 시뮬</a>
+      <a href="/tax-calculator.html">세금 계산기</a><a href="/fx-simulator.html">환율</a>
+      <a href="/privacy.html">개인정보처리방침</a><a href="/terms.html">이용약관</a>
+    </div>
+    <div class="footer-note">© 2026 USBond.co.kr · 교육 목적 · 투자 권유 아님</div>
+  </div>
 </footer>
 
 <script>
-const FACE=100, TAX=0.154, TLT_EXPENSE=0.0015;
+const FACE=100,TAX=0.154,TLT_EXP=0.0015;
 let chartInst=null;
-
-function bondPrice(coupon,face,y,n){
-  if(n<=0)return face;
-  const c=coupon*face/2,r=y/2,N=Math.round(n*2);
-  if(r===0)return c*N+face;
-  return c*(1-Math.pow(1+r,-N))/r+face*Math.pow(1+r,-N);
-}
-
-function fmtUSD(n){return '$'+(+n).toLocaleString('en',{minimumFractionDigits:0,maximumFractionDigits:0});}
-function fmtPct(n){return (n>=0?'+':'')+n.toFixed(1)+'%';}
+function bondPrice(coupon,face,y,n){if(n<=0)return face;const c=coupon*face/2,r=y/2,N=Math.round(n*2);if(r===0)return c*N+face;return c*(1-Math.pow(1+r,-N))/r+face*Math.pow(1+r,-N);}
+function fmtUSD(n){return'$'+(+n).toLocaleString('en',{minimumFractionDigits:0,maximumFractionDigits:0});}
+function fmtPct(n){return(n>=0?'+':'')+n.toFixed(1)+'%';}
 
 function calcCompare(){
-  const invest    = parseFloat(document.getElementById('e-invest').value);
-  const coupon    = parseFloat(document.getElementById('e-coupon').value)/100;
-  const buyPrice  = parseFloat(document.getElementById('e-buyprice').value);
-  const tltBuy    = parseFloat(document.getElementById('e-tltbuy').value);
-  const tltSell   = parseFloat(document.getElementById('e-tltsell').value);
-  const maturity  = parseInt(document.getElementById('e-maturity').value);
-  const holdYears = parseInt(document.getElementById('e-hold').value);
-  const sellYield = parseFloat(document.getElementById('e-sellyield').value)/100;
-  const curYear   = 2026;
+  const invest=parseFloat(document.getElementById('e-invest').value);
+  const coupon=parseFloat(document.getElementById('e-coupon').value)/100;
+  const buyPrice=parseFloat(document.getElementById('e-buyprice').value);
+  const tltBuy=parseFloat(document.getElementById('e-tltbuy').value);
+  const tltSell=parseFloat(document.getElementById('e-tltsell').value);
+  const maturity=parseInt(document.getElementById('e-maturity').value);
+  const holdYears=parseInt(document.getElementById('e-hold').value);
+  const sellYield=parseFloat(document.getElementById('e-sellyield').value)/100;
 
-  // ── 직접매수 계산 ──
-  const unitsDirect = invest / buyPrice;
-  const yearsLeft   = maturity - curYear - holdYears;
-  const sellPriceDirect = Math.min(bondPrice(coupon, FACE, sellYield, yearsLeft), 200);
-  const capGain     = (sellPriceDirect - buyPrice) * unitsDirect;
-  const couponGross = coupon * FACE * holdYears * unitsDirect;
-  const couponNet   = couponGross * (1 - TAX);
-  const directTotal = sellPriceDirect * unitsDirect + couponNet;
-  const directRet   = ((directTotal - invest) / invest) * 100;
+  const unitsDirect=invest/buyPrice;
+  const yearsLeft=maturity-2026-holdYears;
+  const sellPriceDirect=Math.min(bondPrice(coupon,FACE,sellYield,yearsLeft),200);
+  const capGain=(sellPriceDirect-buyPrice)*unitsDirect;
+  const couponNet=coupon*FACE*holdYears*unitsDirect*(1-TAX);
+  const directTotal=sellPriceDirect*unitsDirect+couponNet;
+  const directRet=((directTotal-invest)/invest)*100;
 
-  // ── TLT ETF 계산 ──
-  const tltUnits    = invest / tltBuy;
-  // TLT 총수익률 추정: 가격상승 + 배당(쿠폰 수준) - 운용보수, 모두 배당소득세 과세
-  const tltPriceGain= (tltSell - tltBuy) * tltUnits;
-  const tltDivGross = coupon * tltBuy * holdYears * tltUnits; // 배당 (쿠폰 근사)
-  const expenseCost = invest * (1 - Math.pow(1-TLT_EXPENSE, holdYears)); // 누적 운용보수
-  const tltGrossProfit = tltPriceGain + tltDivGross - expenseCost;
-  const tltNetProfit   = tltGrossProfit * (1 - TAX); // 전체 배당소득세
-  const tltTotal    = invest + tltNetProfit;
-  const tltRet      = ((tltTotal - invest) / invest) * 100;
+  const tltUnits=invest/tltBuy;
+  const tltPriceGain=(tltSell-tltBuy)*tltUnits;
+  const tltDivGross=coupon*tltBuy*holdYears*tltUnits;
+  const expenseCost=invest*(1-Math.pow(1-TLT_EXP,holdYears));
+  const tltGrossProfit=tltPriceGain+tltDivGross-expenseCost;
+  const tltNetProfit=tltGrossProfit*(1-TAX);
+  const tltTotal=invest+tltNetProfit;
+  const tltRet=((tltTotal-invest)/invest)*100;
+  const directWins=directTotal>=tltTotal;
+  const diff=Math.abs(directTotal-tltTotal);
 
-  const directWins = directTotal >= tltTotal;
-  const diff = Math.abs(directTotal - tltTotal);
-
-  // 결과 표시
   document.getElementById('results').style.display='block';
-
-  // 2분할 결과
   document.getElementById('result-split').innerHTML=`
     <div class="rs-card direct">
-      <div class="rs-name" style="color:var(--gold)">▶ 삼성증권 직접매수</div>
-      <div class="rs-total" style="color:var(--gold)">${fmtUSD(directTotal)}</div>
-      <div class="rs-return ${directRet>=0?'':''}` + `" style="color:${directWins?'var(--green)':'var(--text-dim)'}">${fmtPct(directRet)}</div>
-      <div class="rs-breakdown">
-        매도 채권가: ${fmtUSD(sellPriceDirect*unitsDirect)}<br>
-        쿠폰 세후: ${fmtUSD(couponNet)}<br>
-        자본차익(비과세): ${fmtUSD(capGain)}<br>
-        쿠폰 세금: -${fmtUSD(couponGross*TAX)}<br>
-        운용보수: 없음 ✅
-      </div>
+      <div class="rs-name" style="color:var(--green-text)">삼성증권 직접매수</div>
+      <div class="rs-total" style="color:var(--green-text)">${fmtUSD(directTotal)}</div>
+      <div class="rs-return" style="color:${directWins?'var(--green-text)':'var(--text3)'}">${fmtPct(directRet)}</div>
+      <div class="rs-detail">매도 채권가: ${fmtUSD(sellPriceDirect*unitsDirect)}<br>쿠폰 세후: ${fmtUSD(couponNet)}<br>자본차익(비과세): ${fmtUSD(capGain)}</div>
     </div>
     <div class="rs-card etf">
-      <div class="rs-name" style="color:var(--blue)">▶ TLT ETF</div>
-      <div class="rs-total" style="color:var(--blue)">${fmtUSD(tltTotal)}</div>
-      <div class="rs-return" style="color:${!directWins?'var(--green)':'var(--text-dim)'}">${fmtPct(tltRet)}</div>
-      <div class="rs-breakdown">
-        ETF 매도가: ${fmtUSD(tltSell*tltUnits)}<br>
-        배당 세후: ${fmtUSD(tltDivGross*(1-TAX))}<br>
-        배당소득세: -${fmtUSD(tltGrossProfit*TAX)}<br>
-        운용보수: -${fmtUSD(expenseCost)}<br>
-        유동성: 높음 ✅
-      </div>
-    </div>
-  `;
+      <div class="rs-name" style="color:var(--blue-text)">TLT ETF</div>
+      <div class="rs-total" style="color:var(--blue-text)">${fmtUSD(tltTotal)}</div>
+      <div class="rs-return" style="color:${!directWins?'var(--blue-text)':'var(--text3)'}">${fmtPct(tltRet)}</div>
+      <div class="rs-detail">ETF 매도가: ${fmtUSD(tltSell*tltUnits)}<br>배당 세후: ${fmtUSD(tltDivGross*(1-TAX))}<br>운용보수: -${fmtUSD(expenseCost)}</div>
+    </div>`;
 
-  // 승자
-  const wb = document.getElementById('winner-box');
-  wb.className = 'winner-box '+(directWins?'direct-wins':'etf-wins');
-  wb.innerHTML=`
-    <div class="winner-title" style="color:${directWins?'var(--gold)':'var(--blue)'}">
-      ${directWins?'🏆 직접매수가 유리':'🏆 TLT ETF가 유리'}
-    </div>
-    <div class="winner-sub">
-      ${holdYears}년 보유 · 금리 ${(sellYield*100).toFixed(1)}% 시나리오에서
-      <strong style="color:${directWins?'var(--gold)':'var(--blue)'}">
-        ${directWins?'직접매수':'TLT ETF'}가 ${fmtUSD(diff)} 더 유리합니다
-      </strong><br>
-      ${directWins
-        ? `매매차익 비과세 효과: ${fmtUSD(capGain*TAX)} 절세`
-        : `TLT ETF의 유동성·분산 효과가 세금 차이를 상회합니다`}
-    </div>
-  `;
+  const wb=document.getElementById('winner-box');
+  wb.className='winner-box '+(directWins?'direct':'etf');
+  wb.innerHTML=`🏆 ${directWins?'직접매수':'TLT ETF'}가 ${fmtUSD(diff)} 더 유리 (${holdYears}년 보유 · 금리 ${(sellYield*100).toFixed(1)}% 시나리오)${directWins?` · 매매차익 비과세 절세: ${fmtUSD(capGain*TAX)}`:''}`;
 
-  // 항목별 비교표
   const rows=[
-    ['세금 구조','이자: 15.4% · 차익: <span class="good">비과세</span>','전체 수익: 15.4% 배당소득세','직접매수 유리'],
-    ['운용보수','<span class="good">없음</span>','연 0.15% ('+holdYears+'년 누적 '+fmtUSD(expenseCost)+')','직접매수 유리'],
-    ['최소 투자금','$1,000 단위','$1 단위 가능','ETF 유리'],
-    ['유동성','스프레드 0.5~1.5%','<span class="good">스프레드 0.01~0.03%</span>','ETF 유리'],
-    ['만기','확정 ('+maturity+'년)','없음 (자동 롤오버)','직접매수 유리 (예측 가능)'],
-    ['환율 노출','동일 (달러 기준)','동일 (달러 기준)','동일'],
-    ['계좌 개설','삼성증권 필요','국내 증권사 가능','ETF 유리'],
-    ['세후 총수익',`<strong style="color:var(--gold)">${fmtPct(directRet)}</strong>`,`<strong style="color:var(--blue)">${fmtPct(tltRet)}</strong>`,directWins?'<span class="good">직접매수 +'+fmtPct(directRet-tltRet)+'</span>':'<span style="color:var(--blue)">ETF +'+fmtPct(tltRet-directRet)+'</span>'],
+    ['세금 구조','이자 15.4% · 차익 비과세','전체 수익 15.4%','직접매수 유리'],
+    ['운용보수','없음 ✅',`연 0.15% (${holdYears}년 누적 ${fmtUSD(expenseCost)})`,'직접매수 유리'],
+    ['최소 투자','$1,000 단위','$1 단위 가능','ETF 유리'],
+    ['유동성','스프레드 0.5~1.5%','스프레드 0.01~0.03%','ETF 유리'],
+    ['만기 확정',`${maturity}년 만기 확정`,'없음 (자동 롤오버)','직접매수 유리'],
+    [`세후 총수익`,`<strong style="color:var(--green-text)">${fmtPct(directRet)}</strong>`,`<strong style="color:var(--blue-text)">${fmtPct(tltRet)}</strong>`,directWins?`<span style="color:var(--green-text);font-weight:600">직접매수 +${fmtPct(directRet-tltRet)}</span>`:`<span style="color:var(--blue-text);font-weight:600">ETF +${fmtPct(tltRet-directRet)}</span>`],
   ];
-  document.getElementById('compare-tbody').innerHTML=rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td style="color:var(--text-muted);font-size:11px">${r[3]}</td></tr>`).join('');
+  document.getElementById('compare-tbody').innerHTML=rows.map(r=>`<tr><td style="font-weight:600;color:var(--text)">${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td style="color:var(--text3);font-size:12px">${r[3]}</td></tr>`).join('');
 
-  // 연도별 테이블 + 차트 데이터
+  const chartLabels=[],chartDirect=[],chartETF=[];
   const yearlyRows=[];
-  const chartDirect=[], chartETF=[], chartLabels=[];
-
   for(let yr=1;yr<=20;yr++){
-    const yLeft=maturity-curYear-yr;
-    const sp=Math.min(bondPrice(coupon,FACE,sellYield,yLeft),200);
+    const yl=maturity-2026-yr;
+    const sp=Math.min(bondPrice(coupon,FACE,sellYield,yl),200);
     const cg=(sp-buyPrice)*unitsDirect;
     const cn=coupon*FACE*yr*unitsDirect*(1-TAX);
     const dt=sp*unitsDirect+cn;
     const dr=((dt-invest)/invest)*100;
-
-    // TLT: 선형 보간으로 가격 추정
     const tltSellYr=tltBuy+(tltSell-tltBuy)*(yr/holdYears);
     const tltPgYr=(tltSellYr-tltBuy)*tltUnits;
     const tltDvYr=coupon*tltBuy*yr*tltUnits;
-    const tltExpYr=invest*(1-Math.pow(1-TLT_EXPENSE,yr));
+    const tltExpYr=invest*(1-Math.pow(1-TLT_EXP,yr));
     const tltGpYr=tltPgYr+tltDvYr-tltExpYr;
     const tltNpYr=tltGpYr*(1-TAX);
     const tltTtYr=invest+tltNpYr;
     const tltRtYr=((tltTtYr-invest)/invest)*100;
-
-    chartLabels.push(yr+'년');
-    chartDirect.push(dr.toFixed(1));
-    chartETF.push(tltRtYr.toFixed(1));
-
+    chartLabels.push(yr+'년');chartDirect.push(dr.toFixed(1));chartETF.push(tltRtYr.toFixed(1));
     const dw=dr>=tltRtYr;
-    yearlyRows.push(`<tr class="${dw?'direct-better':'etf-better'}">
+    yearlyRows.push(`<tr class="${dw?'d-better':'e-better'}">
       <td>${yr}년 보유</td>
-      <td style="color:var(--gold);font-weight:${yr===holdYears?700:400}">${fmtPct(dr)}</td>
-      <td style="color:var(--gold)">${fmtUSD(dt)}</td>
-      <td style="color:var(--blue);font-weight:${yr===holdYears?700:400}">${fmtPct(tltRtYr)}</td>
-      <td style="color:var(--blue)">${fmtUSD(tltTtYr)}</td>
-      <td style="color:${dw?'var(--gold)':'var(--blue)'};font-weight:600">${dw?'직접매수':'ETF'}</td>
+      <td style="color:var(--green-text);font-weight:${yr===holdYears?700:400}">${fmtPct(dr)}</td>
+      <td style="color:var(--green-text)">${fmtUSD(dt)}</td>
+      <td style="color:var(--blue-text);font-weight:${yr===holdYears?700:400}">${fmtPct(tltRtYr)}</td>
+      <td style="color:var(--blue-text)">${fmtUSD(tltTtYr)}</td>
+      <td style="color:${dw?'var(--green-text)':'var(--blue-text)'};font-weight:600">${dw?'직접매수':'ETF'}</td>
     </tr>`);
   }
   document.getElementById('yearly-tbody').innerHTML=yearlyRows.join('');
 
-  // 차트
   if(chartInst)chartInst.destroy();
-  const ctx=document.getElementById('compare-chart').getContext('2d');
-  chartInst=new Chart(ctx,{
+  chartInst=new Chart(document.getElementById('compare-chart').getContext('2d'),{
     type:'line',
-    data:{
-      labels:chartLabels,
-      datasets:[
-        {label:'직접매수',data:chartDirect,borderColor:'#c9a84c',backgroundColor:'rgba(201,168,76,0.08)',borderWidth:2.5,pointRadius:3,fill:true,tension:0.3},
-        {label:'TLT ETF',data:chartETF,borderColor:'#4d9fff',backgroundColor:'rgba(77,159,255,0.08)',borderWidth:2.5,pointRadius:3,fill:true,tension:0.3},
-      ]
-    },
-    options:{
-      responsive:true,maintainAspectRatio:false,
-      plugins:{
-        legend:{labels:{color:'#6b7fa0',font:{size:11}}},
-        tooltip:{backgroundColor:'#0f1e3a',borderColor:'#334155',borderWidth:1,titleColor:'#94a3b8',bodyColor:'#e2e8f0',
-          callbacks:{label:ctx=>`${ctx.dataset.label}: ${ctx.parsed.y}%`}}
-      },
-      scales:{
-        x:{ticks:{color:'#475569',font:{size:10}},grid:{color:'rgba(255,255,255,0.05)'}},
-        y:{ticks:{color:'#475569',font:{size:10},callback:v=>v+'%'},grid:{color:'rgba(255,255,255,0.05)'},
-          title:{display:true,text:'세후 수익률 (%)',color:'#475569',font:{size:10}}}
-      }
-    }
+    data:{labels:chartLabels,datasets:[
+      {label:'직접매수',data:chartDirect,borderColor:'#22c55e',backgroundColor:'rgba(34,197,94,0.08)',borderWidth:2.5,pointRadius:2,fill:true,tension:0.3},
+      {label:'TLT ETF',data:chartETF,borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,0.08)',borderWidth:2.5,pointRadius:2,fill:true,tension:0.3}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#3f3f46',font:{size:11}}},tooltip:{backgroundColor:'#fff',borderColor:'#e4e4e7',borderWidth:1,titleColor:'#3f3f46',bodyColor:'#09090b',callbacks:{label:ctx=>`${ctx.dataset.label}: ${ctx.parsed.y}%`}}},scales:{x:{ticks:{color:'#71717a',font:{size:10}},grid:{color:'rgba(0,0,0,0.04)'}},y:{ticks:{color:'#71717a',font:{size:10},callback:v=>v+'%'},grid:{color:'rgba(0,0,0,0.04)'}}}}
   });
-
   document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
 }
-
-// 초기 실행
 calcCompare();
 </script>
 </body>
